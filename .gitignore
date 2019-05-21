@@ -1,0 +1,19 @@
+# Node modules get installed here
+node_modules/
+
+# sass and webassets output artifacts
+scss/assets
+scss/variables.scss
+scss/variables.scss.map
+.sass-cache/
+.webassets-cache
+
+# Python virtual env
+.venv/
+
+.pytest_cache/
+__pycache__
+
+# Compiled python bytecode files
+*.pyc
+.cache/
