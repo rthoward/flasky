@@ -1,3 +1,4 @@
-from flasky.app import make_app
+from flasky.app import make_app, make_config
 
-app = make_app()
+config = make_config()
+app = make_app(config)

@@ -8,6 +8,11 @@ pylint = "*"
 
 [packages]
 flask = "*"
+flask-sqlalchemy = "*"
+alembic = "*"
+unipath = "*"
+sqlalchemy = "*"
+psycopg2-binary = "*"
 
 [requires]
 python_version = "3.7"
