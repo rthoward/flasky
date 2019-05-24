@@ -6,5 +6,5 @@ class CreateUser(object):
         self.user_service = user_service
 
     def do(self, username):
-        user = self.user_service.create(username=username)
-        return user
+        self.user_service.validate({"username": username})
+        return self.user_service.create(username=username)
