@@ -52,8 +52,8 @@ def session(db, request):
 
 
 @pytest.fixture(scope="function")
-def mock_session():
-    return Mock(spec=SQLAlchemy)
+def mock_session(session):
+    return Mock(spec=session)
 
 
 def apply_migrations():

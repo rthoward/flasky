@@ -4,11 +4,12 @@ from flask_sqlalchemy import SQLAlchemy
 
 from flasky.models.user import User
 from flasky.services.user_service import UserService, InvalidUsernameException
+from test import testutils
 
 
 def test_create_user(session):
-    new_user = UserService(session).create(username="username")
-    assert session.query(User).get(new_user.id)
+    new_user = UserService(session=session).create(username="username")
+    testutils.assert_models_equal({"username": "username"}, new_user)
 
 
 def test_create_user_validates_name_length(mock_session):
