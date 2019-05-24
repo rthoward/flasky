@@ -13,7 +13,7 @@ def test_create_user(session):
 
 
 def test_create_user_validates_name_length(mock_session):
-    long_username = ''.join(["a"] * 100)
+    long_username = "".join(["a"] * 100)
 
     user_service = UserService(session=mock_session)
 

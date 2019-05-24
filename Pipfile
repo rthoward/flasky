@@ -8,6 +8,7 @@ pylint = "*"
 ipython = "*"
 ipdb = "*"
 pytest = "*"
+black = "*"
 
 [packages]
 flask = "*"
@@ -19,3 +20,6 @@ psycopg2-binary = "*"
 
 [requires]
 python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true

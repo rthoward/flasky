@@ -6,7 +6,8 @@ from unittest.mock import Mock
 from flasky.app import make_config, make_app
 import alembic.config
 
-@pytest.fixture(scope='session')
+
+@pytest.fixture(scope="session")
 def app(request):
     config = make_config()
     app = make_app(config)
@@ -31,7 +32,7 @@ def db(app, request):
     _db.drop_all()
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def session(db, request):
     """Creates a new database session for a test."""
     connection = db.engine.connect()

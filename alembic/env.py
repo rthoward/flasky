@@ -1,4 +1,3 @@
-
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -17,6 +16,7 @@ fileConfig(config.config_file_name)
 
 import sys
 from unipath import Path
+
 parent_dir = Path(__file__).parent.parent
 sys.path.append(parent_dir)
 
@@ -54,9 +54,7 @@ def run_migrations_offline():
 
     """
     url = config.get_main_option("sqlalchemy.url")
-    context.configure(
-        url=url, target_metadata=target_metadata, literal_binds=True
-    )
+    context.configure(url=url, target_metadata=target_metadata, literal_binds=True)
 
     with context.begin_transaction():
         context.run_migrations()
@@ -76,9 +74,7 @@ def run_migrations_online():
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

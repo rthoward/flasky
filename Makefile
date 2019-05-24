@@ -5,3 +5,6 @@ dev:
 
 test:
 	pipenv run pytest -s
+
+format:
+	pipenv run black .

@@ -1,5 +1,6 @@
 from flasky.services import UserService
 
+
 class CreateUser(object):
     def __init__(self, user_service: UserService):
         self.user_service = user_service

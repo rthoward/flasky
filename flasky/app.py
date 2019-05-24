@@ -6,8 +6,8 @@ from flasky.routes import make_routes
 from flasky.services import UserService
 from flasky.usecases.users import CreateUser
 
-class Usecases(object):
 
+class Usecases(object):
     def __init__(self, user_service):
         self.create_user = CreateUser(user_service)
 
@@ -28,13 +28,11 @@ def make_db(app):
 
 
 def make_usecases(session):
-    return Usecases(
-        UserService(session)
-    )
+    return Usecases(UserService(session))
 
 
 def make_config():
     return {
         "SQLALCHEMY_DATABASE_URI": "postgresql://postgres:postgres@localhost:5432/postgres",
-        "SQLALCHEMY_TRACK_MODIFICATIONS": False
+        "SQLALCHEMY_TRACK_MODIFICATIONS": False,
     }
