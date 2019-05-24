@@ -17,3 +17,5 @@ __pycache__
 # Compiled python bytecode files
 *.pyc
 .cache/
+
+.mypy_cache

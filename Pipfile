@@ -9,6 +9,7 @@ ipython = "*"
 ipdb = "*"
 pytest = "*"
 black = "*"
+mypy = "*"
 
 [packages]
 flask = "*"
