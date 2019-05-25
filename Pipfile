@@ -20,6 +20,8 @@ unipath = "*"
 sqlalchemy = "*"
 psycopg2-binary = "*"
 cerberus = "*"
+attrs = "*"
+hug = {path = "/home/richard/code/hug", editable = true}
 
 [requires]
 python_version = "3.7"
