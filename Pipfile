@@ -10,6 +10,7 @@ ipdb = "*"
 pytest = "*"
 black = "*"
 mypy = "*"
+sqlalchemy-stubs = "*"
 
 [packages]
 flask = "*"

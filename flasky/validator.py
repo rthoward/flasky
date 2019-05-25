@@ -1,4 +1,4 @@
-from cerberus import Validator as CerberusValidator # type: ignore
+from cerberus import Validator as CerberusValidator
 
 
 class ValidationError(Exception):
