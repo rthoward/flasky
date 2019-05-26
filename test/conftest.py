@@ -5,6 +5,7 @@ from unittest.mock import Mock
 
 from flasky.app import make_config, make_app
 import alembic.config
+from test import factories
 
 
 @pytest.fixture(scope="session")
@@ -43,6 +44,15 @@ def session(db, request):
 
     db.session = session
 
+    factory_list = [
+        cls
+        for _name, cls in factories.__dict__.items()
+        if isinstance(cls, type) and cls.__module__ == "test.factories"
+    ]
+    for factory in factory_list:
+        factory._meta.sqlalchemy_session = session
+        factory._meta.sqlalchemy_session_persistence = "commit"
+
     def teardown():
         transaction.rollback()
         connection.close()
@@ -55,6 +65,11 @@ def session(db, request):
 @pytest.fixture(scope="function")
 def mock_session(session):
     return Mock(spec=session)
+
+
+@pytest.fixture(scope="function")
+def client(app, db):
+    return app.test_client()
 
 
 def apply_migrations():
