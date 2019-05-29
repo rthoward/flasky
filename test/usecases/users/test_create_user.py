@@ -7,8 +7,8 @@ from test import testutils
 
 
 @pytest.fixture
-def create_user(session) -> CreateUser:
-    return CreateUser(UserService(session=session))
+def create_user(session_handler) -> CreateUser:
+    return CreateUser(UserService(session_handler=session_handler))
 
 
 def test_create_user(create_user: CreateUser):
