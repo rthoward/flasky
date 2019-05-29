@@ -2,29 +2,24 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 from flasky.routes import make_routes
-
 from flasky.services import UserService
-from flasky.usecases.users import CreateUser
+from flasky.usecases import Usecases
 
 
-class Usecases(object):
-    def __init__(self, user_service):
-        self.create_user = CreateUser(user_service)
-
-
-def make_app(config):
+def make_app(config, session=None):
     app = Flask(__name__)
     app.config.update(config)
 
-    db = make_db(app)
-    usecases = make_usecases(db.session)
+    session = make_session(app)
+    usecases = make_usecases(session)
     make_routes(app, usecases)
 
     return app
 
 
-def make_db(app):
-    return SQLAlchemy(app)
+def make_session(app):
+    db = SQLAlchemy(app)
+    return db.session
 
 
 def make_usecases(session):

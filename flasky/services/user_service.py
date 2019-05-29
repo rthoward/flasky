@@ -1,5 +1,8 @@
+from sqlalchemy.orm.exc import NoResultFound
+
 from flasky.models import User
 from flasky.validator import Validator
+from flasky.exceptions import NotFoundError
 
 
 CREATE_USER_SCHEMA = {
@@ -17,6 +20,12 @@ class UserService(object):
         self.session.commit()
 
         return new_user
+
+    def get(self, id_: int) -> User:
+        try:
+            return self.session.query(User).filter_by(id=id_).one()
+        except NoResultFound:
+            raise NotFoundError("user", id_)
 
     def validate(self, user_dict: dict):
         Validator(CREATE_USER_SCHEMA).validate(user_dict)

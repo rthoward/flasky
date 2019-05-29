@@ -1,7 +1,7 @@
-import factory
+from factory.alchemy import SQLAlchemyModelFactory
 from flasky import models
 
 
-class UserFactory(factory.Factory):
+class UserFactory(SQLAlchemyModelFactory):
     class Meta:
         model = models.User

@@ -11,6 +11,7 @@ from test import factories
 @pytest.fixture(scope="session")
 def app(request):
     config = make_config()
+    config.update({"SERVER_NAME": "meow"})
     app = make_app(config)
 
     # Establish an application context before running the tests.
@@ -33,16 +34,16 @@ def db(app, request):
     _db.drop_all()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="function", autouse=True)
 def session(db, request):
     """Creates a new database session for a test."""
     connection = db.engine.connect()
     transaction = connection.begin()
 
     options = dict(bind=connection, binds={})
-    session = db.create_scoped_session(options=options)
+    session_ = db.create_scoped_session(options=options)
 
-    db.session = session
+    db.session = session_
 
     factory_list = [
         cls
@@ -50,16 +51,16 @@ def session(db, request):
         if isinstance(cls, type) and cls.__module__ == "test.factories"
     ]
     for factory in factory_list:
-        factory._meta.sqlalchemy_session = session
+        factory._meta.sqlalchemy_session = session_
         factory._meta.sqlalchemy_session_persistence = "commit"
 
     def teardown():
         transaction.rollback()
         connection.close()
-        session.remove()
+        session_.remove()
 
     request.addfinalizer(teardown)
-    return session
+    return session_
 
 
 @pytest.fixture(scope="function")
