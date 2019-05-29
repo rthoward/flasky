@@ -20,10 +20,10 @@ from unipath import Path
 parent_dir = Path(__file__).parent.parent
 sys.path.append(parent_dir)
 
-from flasky.app import make_config, make_app
+from flasky.app import make_config, make_flask_app
 
 app_config = make_config()
-make_app(app_config)
+make_flask_app(app_config)
 
 config.set_main_option("sqlalchemy.url", app_config["SQLALCHEMY_DATABASE_URI"])
 

@@ -1,25 +1,27 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from flasky.routes import make_routes
+from flasky import routes
 
 from flasky.services import UserService
 from flasky.usecases import Usecases
 
 
-def make_app(config):
+def make_flask_app(config):
     app = Flask(__name__)
     app.config.update(config)
-
-    db = make_db(app)
-    usecases = make_usecases(db.session)
-    make_routes(app, usecases)
-
+    make_db(app)
     return app
 
 
+def make_routes(app):
+    usecases = make_usecases(app.db.session)
+    routes.make_routes(app, usecases)
+
+
 def make_db(app):
-    return SQLAlchemy(app)
+    db = SQLAlchemy(app)
+    app.db = db
 
 
 def make_usecases(session):

@@ -3,22 +3,20 @@ import pytest
 from flask_sqlalchemy import SQLAlchemy
 from unittest.mock import Mock
 
-from flasky.app import make_config, make_app
+from flasky.app import make_config, make_flask_app, make_routes
 import alembic.config
 from test import factories
 
 
 @pytest.fixture(scope="session")
-def app(request, db):
+def app(request):
     config = make_config()
     test_config = {**config, "SERVER_NAME": "meow"}
-    app = make_app(test_config)
+    app = make_flask_app(test_config)
 
     # Establish an application context before running the tests.
     ctx = app.app_context()
     ctx.push()
-
-    db.init_app(app)
 
     def teardown():
         ctx.pop()
@@ -28,8 +26,10 @@ def app(request, db):
 
 
 @pytest.fixture(scope="session")
-def db(request):
+def db(app, request):
     _db = SQLAlchemy()
+    _db.init_app(app)
+    app.db = _db
     apply_migrations()
     yield _db
     _db.drop_all()
@@ -62,6 +62,11 @@ def session(db, request):
 
     request.addfinalizer(teardown)
     return session
+
+
+@pytest.fixture(scope="function", autouse=True)
+def _make_routes(app, session):
+    make_routes(app)
 
 
 @pytest.fixture(scope="function")
