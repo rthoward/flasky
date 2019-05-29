@@ -3,6 +3,9 @@
 dev:
 	@FLASK_APP=main.py FLASK_ENV=development pipenv run flask run
 
+dev.kill:
+	pkill -f "flask run"
+
 test:
 	@pipenv run pytest -s
 
