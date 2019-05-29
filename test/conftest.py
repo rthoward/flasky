@@ -28,7 +28,9 @@ def app(request):
 @pytest.fixture(scope="session")
 def engine():
     config = make_config()
-    return create_engine(config["SQLALCHEMY_DATABASE_URI"])
+    engine = create_engine(config["SQLALCHEMY_DATABASE_URI"])
+    apply_migrations()
+    yield engine
 
 
 class MockSessionHandler(object):
@@ -36,21 +38,16 @@ class MockSessionHandler(object):
         self.session = session
 
 
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture(scope="function")
 def session_handler(engine, request):
-    session_factory = orm.sessionmaker(bind=engine)
+    """Creates a new database session for a test."""
+    connection = engine.connect()
+    transaction = connection.begin()
+
+    session_factory = orm.sessionmaker(bind=connection)
     Session = orm.scoped_session(session_factory)
     session = Session()
     session_handler = MockSessionHandler(session)
-
-    # """Creates a new database session for a test."""
-    # connection = engine.connect()
-    # transaction = connection.begin()
-
-    # options = dict(bind=connection, binds={})
-    # session = db.create_scoped_session(options=options)
-
-    # db.session = session
 
     factory_list = [
         cls
@@ -63,13 +60,13 @@ def session_handler(engine, request):
 
     yield session_handler
 
-    # def teardown():
-    #     transaction.rollback()
-    #     connection.close()
-    #     session.remove()
+    def teardown():
+        transaction.rollback()
+        connection.close()
+        Session.remove()
 
-    # request.addfinalizer(teardown)
-    # return session
+    request.addfinalizer(teardown)
+    return session
 
 @pytest.fixture(scope="function")
 def session(session_handler):
