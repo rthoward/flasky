@@ -1,35 +1,25 @@
 from flask import Flask
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
+from flask_sqlalchemy import SQLAlchemy
 
 from flasky.routes import make_routes
+
 from flasky.services import UserService
 from flasky.usecases import Usecases
 
 
-def make_app(config, session=None):
+def make_app(config):
     app = Flask(__name__)
     app.config.update(config)
 
-    session = session or make_session(config)
-    usecases = make_usecases(session)
+    db = make_db(app)
+    usecases = make_usecases(db.session)
     make_routes(app, usecases)
-    make_handlers(app, session)
 
     return app
 
 
-def make_session(config):
-    engine = create_engine(config["SQLALCHEMY_DATABASE_URI"])
-    session_factory = sessionmaker(bind=engine)
-    return scoped_session(session_factory)()
-
-
-def make_handlers(app, session):
-    pass
-    # @app.teardown_appcontext
-    # def teardown_appcontext(response_or_exc):
-    #     session.remove()
+def make_db(app):
+    return SQLAlchemy(app)
 
 
 def make_usecases(session):

@@ -1,22 +1,24 @@
 import os
 import pytest
+from flask_sqlalchemy import SQLAlchemy
 from unittest.mock import Mock
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-import contextlib
 
-from flasky.app import make_config, make_app, make_session
+from flasky.app import make_config, make_app
 import alembic.config
 from test import factories
 
 
-@pytest.fixture(scope="function")
-def app(request, config, session):
-    app = make_app(config, session=session)
+@pytest.fixture(scope="session")
+def app(request, db):
+    config = make_config()
+    test_config = {**config, "SERVER_NAME": "meow"}
+    app = make_app(test_config)
 
     # Establish an application context before running the tests.
     ctx = app.app_context()
     ctx.push()
+
+    db.init_app(app)
 
     def teardown():
         ctx.pop()
@@ -26,31 +28,23 @@ def app(request, config, session):
 
 
 @pytest.fixture(scope="session")
-def config():
-    config = make_config()
-    config.update({"SERVER_NAME": "meow"})
-    return config
-
-
-@pytest.fixture(scope="session")
-def engine(request, config):
-    engine = create_engine(config["SQLALCHEMY_DATABASE_URI"])
+def db(request):
+    _db = SQLAlchemy()
     apply_migrations()
-    return engine
+    yield _db
+    _db.drop_all()
 
 
-@pytest.fixture(scope="function", autouse=True)
-def session(engine, request):
+@pytest.fixture(scope="function")
+def session(db, request):
     """Creates a new database session for a test."""
-
-    connection = engine.connect()
+    connection = db.engine.connect()
     transaction = connection.begin()
 
     options = dict(bind=connection, binds={})
-    session_factory = sessionmaker(bind=engine)
-    Session = scoped_session(session_factory)
+    session = db.create_scoped_session(options=options)
 
-    session_ = Session()
+    db.session = session
 
     factory_list = [
         cls
@@ -58,16 +52,16 @@ def session(engine, request):
         if isinstance(cls, type) and cls.__module__ == "test.factories"
     ]
     for factory in factory_list:
-        factory._meta.sqlalchemy_session = session_
+        factory._meta.sqlalchemy_session = session
         factory._meta.sqlalchemy_session_persistence = "commit"
 
     def teardown():
         transaction.rollback()
         connection.close()
-        Session.remove()
+        session.remove()
 
     request.addfinalizer(teardown)
-    return session_
+    return session
 
 
 @pytest.fixture(scope="function")
@@ -76,7 +70,7 @@ def mock_session(session):
 
 
 @pytest.fixture(scope="function")
-def client(app):
+def client(app, db):
     return app.test_client()
 
 
