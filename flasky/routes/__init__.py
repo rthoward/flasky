@@ -5,9 +5,10 @@ from functools import wraps
 from flasky.services import UserService
 from flasky.usecases import Usecases
 from flasky import exceptions as e
+from flasky.models import User
 
 
-def make_routes(app: Flask, usecases: Usecases):
+def make_routes(app: Flask, usecases):
 
     make_error_handlers(app)
 
@@ -20,8 +21,18 @@ def make_routes(app: Flask, usecases: Usecases):
 
         return wrapper
 
+    def r(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            args_ = args + (usecases,)
+            return f(*args_, **kwargs)
+
+        return wrapper
+
     @app.route("/")
-    def root():
+    @r
+    def root(usecases: Usecases):
+        print(usecases.list_users.do())
         return "hello world"
 
     @app.route("/users")
@@ -34,6 +45,8 @@ def make_routes(app: Flask, usecases: Usecases):
     def me(user=None):
         print(user)
         return "me"
+
+    return app
 
 
 def make_error_handlers(app):

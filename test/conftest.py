@@ -35,7 +35,7 @@ def db(app, request):
     _db.drop_all()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="function", autouse=True)
 def session(db, request):
     """Creates a new database session for a test."""
     connection = db.engine.connect()
@@ -62,11 +62,6 @@ def session(db, request):
 
     request.addfinalizer(teardown)
     return session
-
-
-@pytest.fixture(scope="function", autouse=True)
-def _make_routes(app, session):
-    make_routes(app)
 
 
 @pytest.fixture(scope="function")
