@@ -1,18 +1,18 @@
 import os
 import pytest
-from flask_sqlalchemy import SQLAlchemy
 from unittest.mock import Mock
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
+import contextlib
 
-from flasky.app import make_config, make_app
+from flasky.app import make_config, make_app, make_session
 import alembic.config
 from test import factories
 
 
-@pytest.fixture(scope="session")
-def app(request):
-    config = make_config()
-    config.update({"SERVER_NAME": "meow"})
-    app = make_app(config)
+@pytest.fixture(scope="function")
+def app(request, config, session):
+    app = make_app(config, session=session)
 
     # Establish an application context before running the tests.
     ctx = app.app_context()
@@ -26,24 +26,31 @@ def app(request):
 
 
 @pytest.fixture(scope="session")
-def db(app, request):
-    _db = SQLAlchemy()
-    _db.app = app
+def config():
+    config = make_config()
+    config.update({"SERVER_NAME": "meow"})
+    return config
+
+
+@pytest.fixture(scope="session")
+def engine(request, config):
+    engine = create_engine(config["SQLALCHEMY_DATABASE_URI"])
     apply_migrations()
-    yield _db
-    _db.drop_all()
+    return engine
 
 
 @pytest.fixture(scope="function", autouse=True)
-def session(db, request):
+def session(engine, request):
     """Creates a new database session for a test."""
-    connection = db.engine.connect()
+
+    connection = engine.connect()
     transaction = connection.begin()
 
     options = dict(bind=connection, binds={})
-    session_ = db.create_scoped_session(options=options)
+    session_factory = sessionmaker(bind=engine)
+    Session = scoped_session(session_factory)
 
-    db.session = session_
+    session_ = Session()
 
     factory_list = [
         cls
@@ -57,7 +64,7 @@ def session(db, request):
     def teardown():
         transaction.rollback()
         connection.close()
-        session_.remove()
+        Session.remove()
 
     request.addfinalizer(teardown)
     return session_
@@ -69,7 +76,7 @@ def mock_session(session):
 
 
 @pytest.fixture(scope="function")
-def client(app, db):
+def client(app):
     return app.test_client()
 
 

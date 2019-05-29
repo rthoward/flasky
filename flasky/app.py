@@ -1,5 +1,6 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
 
 from flasky.routes import make_routes
 from flasky.services import UserService
@@ -10,16 +11,25 @@ def make_app(config, session=None):
     app = Flask(__name__)
     app.config.update(config)
 
-    session = make_session(app)
+    session = session or make_session(config)
     usecases = make_usecases(session)
     make_routes(app, usecases)
+    make_handlers(app, session)
 
     return app
 
 
-def make_session(app):
-    db = SQLAlchemy(app)
-    return db.session
+def make_session(config):
+    engine = create_engine(config["SQLALCHEMY_DATABASE_URI"])
+    session_factory = sessionmaker(bind=engine)
+    return scoped_session(session_factory)()
+
+
+def make_handlers(app, session):
+    pass
+    # @app.teardown_appcontext
+    # def teardown_appcontext(response_or_exc):
+    #     session.remove()
 
 
 def make_usecases(session):

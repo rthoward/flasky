@@ -31,7 +31,8 @@ def make_routes(app: Flask, usecases: Usecases):
 
     @app.route("/users/me")
     @authenticate
-    def me():
+    def me(user=None):
+        print(user)
         return "me"
 
 

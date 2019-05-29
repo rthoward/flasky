@@ -3,7 +3,6 @@ from flask import url_for
 
 
 def test_me_returns_401_if_not_authed(client):
-    user = UserFactory.create(username="meow")
     response = client.get(url_for("me"))
     assert response.status_code == 401
 
@@ -15,4 +14,4 @@ def test_me_returns_user_when_successful(client, session):
 
     response = client.get(url_for("me"), headers=headers)
 
-    assert response.status == 200
+    assert response.status_code == 200

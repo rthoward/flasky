@@ -9,7 +9,6 @@ class Authenticate(object):
         self.user_service = user_service
 
     def do(self, request, auth_required=False):
-        import ipdb; ipdb.set_trace()
         auth_header = request.headers.get("Authorization", "")
         match = re.match(r"Bearer (\w+)", auth_header)
 
