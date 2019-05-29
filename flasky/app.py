@@ -1,34 +1,34 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 
-from flasky.routes import make_routes
+from flasky import routes
 
 from flasky.services import UserService
-from flasky.usecases.users import CreateUser
-
-
-class Usecases(object):
-    def __init__(self, user_service):
-        self.create_user = CreateUser(user_service)
+from flasky.routes import make_routes
+from flasky.usecases import Usecases
+from flasky.util import SessionHandler
 
 
 def make_app(config):
-    app = Flask(__name__)
-    app.config.update(config)
+    app = make_flask_app(config)
 
-    db = make_db(app)
-    usecases = make_usecases(db.session)
+    session_handler = SessionHandler(app, make_engine(config))
+    usecases = make_usecases(session_handler)
     make_routes(app, usecases)
-
     return app
 
 
-def make_db(app):
-    return SQLAlchemy(app)
+def make_usecases(session_handler):
+    return Usecases(UserService(session_handler))
 
 
-def make_usecases(session):
-    return Usecases(UserService(session))
+def make_flask_app(config):
+    app = Flask(__name__)
+    app.config.update(config)
+    return app
+
+
+def make_engine(config):
+    return sqlalchemy.create_engine(config["SQLALCHEMY_DATABASE_URI"])
 
 
 def make_config():

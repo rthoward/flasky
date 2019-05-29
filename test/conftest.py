@@ -1,17 +1,18 @@
 import os
 import pytest
-from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine, orm
 from unittest.mock import Mock
 
-from flasky.app import make_config, make_app
+from flasky.app import make_config, make_flask_app, make_routes, make_usecases
 import alembic.config
 from test import factories
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def app(request):
     config = make_config()
-    app = make_app(config)
+    test_config = {**config, "SERVER_NAME": "flasky"}
+    app = make_flask_app(test_config)
 
     # Establish an application context before running the tests.
     ctx = app.app_context()
@@ -25,24 +26,28 @@ def app(request):
 
 
 @pytest.fixture(scope="session")
-def db(app, request):
-    _db = SQLAlchemy()
-    _db.app = app
+def engine():
+    config = make_config()
+    engine = create_engine(config["SQLALCHEMY_DATABASE_URI"])
     apply_migrations()
-    yield _db
-    _db.drop_all()
+    yield engine
+
+
+class MockSessionHandler(object):
+    def __init__(self, session):
+        self.session = session
 
 
 @pytest.fixture(scope="function")
-def session(db, request):
+def session_handler(engine, request):
     """Creates a new database session for a test."""
-    connection = db.engine.connect()
+    connection = engine.connect()
     transaction = connection.begin()
 
-    options = dict(bind=connection, binds={})
-    session = db.create_scoped_session(options=options)
-
-    db.session = session
+    session_factory = orm.sessionmaker(bind=connection)
+    Session = orm.scoped_session(session_factory)
+    session = Session()
+    session_handler = MockSessionHandler(session)
 
     factory_list = [
         cls
@@ -53,22 +58,34 @@ def session(db, request):
         factory._meta.sqlalchemy_session = session
         factory._meta.sqlalchemy_session_persistence = "commit"
 
+    yield session_handler
+
     def teardown():
         transaction.rollback()
         connection.close()
-        session.remove()
+        Session.remove()
 
     request.addfinalizer(teardown)
     return session
 
+@pytest.fixture(scope="function")
+def session(session_handler):
+    return session_handler.session
+
 
 @pytest.fixture(scope="function")
-def mock_session(session):
-    return Mock(spec=session)
+def routes(app, session_handler):
+    usecases = make_usecases(session_handler)
+    make_routes(app, usecases)
 
 
 @pytest.fixture(scope="function")
-def client(app, db):
+def mock_session(session_handler):
+    return Mock(spec=session_handler.session)
+
+
+@pytest.fixture(scope="function")
+def client(app, routes):
     return app.test_client()
 
 
