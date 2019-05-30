@@ -8,33 +8,19 @@ from flasky import exceptions as e
 from flasky.models import User
 from flasky.serializers import UserSerializer
 
+from .user_routes import make_user_routes
+from .decorators import Decorators
+
 
 def make_routes(app: Flask, usecases: Usecases):
 
     make_error_handlers(app)
-
-    def authenticate(f, required=True):
-        @wraps(f)
-        def wrapper(*args, **kwargs):
-            user = usecases.auth.do(request, required)
-            kwargs_ = {**kwargs, "user": user}
-            return f(*args, **kwargs_)
-
-        return wrapper
+    decorators = Decorators(usecases)
+    app = make_user_routes(app, usecases, decorators)
 
     @app.route("/")
     def health():
         return jsonify({"status": "ok"})
-
-    @app.route("/users", methods=("POST",))
-    def create_user():
-        user = usecases.create_user.do(request.json)
-        return jsonify({"user": UserSerializer().dump(user)})
-
-    @app.route("/users/me")
-    @authenticate
-    def me(user):
-        return jsonify({"user": UserSerializer().dump(user)})
 
     return app
 
