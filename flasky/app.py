@@ -1,6 +1,5 @@
 from flask import Flask
-
-from flasky import routes
+from sqlalchemy import create_engine
 
 from flasky.services import UserService
 from flasky.routes import make_routes
@@ -28,7 +27,7 @@ def make_flask_app(config):
 
 
 def make_engine(config):
-    return sqlalchemy.create_engine(config["SQLALCHEMY_DATABASE_URI"])
+    return create_engine(config["SQLALCHEMY_DATABASE_URI"])
 
 
 def make_config():

@@ -22,8 +22,8 @@ def make_routes(app: Flask, usecases):
         return wrapper
 
     @app.route("/")
-    def root():
-        return "hello world"
+    def health():
+        return jsonify({"status": "ok"})
 
     @app.route("/users")
     def create_user():
