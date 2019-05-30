@@ -23,6 +23,7 @@ sqlalchemy = "*"
 psycopg2-binary = "*"
 cerberus = "*"
 attrs = "*"
+marshmallow = "*"
 
 [requires]
 python_version = "3.7"

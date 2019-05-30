@@ -6,9 +6,10 @@ from flasky.services import UserService
 from flasky.usecases import Usecases
 from flasky import exceptions as e
 from flasky.models import User
+from flasky.serializers import UserSerializer
 
 
-def make_routes(app: Flask, usecases):
+def make_routes(app: Flask, usecases: Usecases):
 
     make_error_handlers(app)
 
@@ -25,10 +26,10 @@ def make_routes(app: Flask, usecases):
     def health():
         return jsonify({"status": "ok"})
 
-    @app.route("/users")
+    @app.route("/users", methods=("POST",))
     def create_user():
-        user = usecases.create_user.do("my username")
-        return "create user"
+        user = usecases.create_user.do(request.json)
+        return jsonify({"user": UserSerializer().dump(user)})
 
     @app.route("/users/me")
     @authenticate
