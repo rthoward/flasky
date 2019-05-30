@@ -2,13 +2,8 @@ from typing import List
 from sqlalchemy.orm.exc import NoResultFound
 
 from flasky.models import User
-from flasky.validator import Validator
 from flasky.exceptions import NotFoundError
-
-
-CREATE_USER_SCHEMA = {
-    "username": {"nullable": False, "type": "string", "maxlength": 50}
-}
+from flasky.serializers import UserSerializer
 
 
 class UserService(object):
@@ -36,4 +31,4 @@ class UserService(object):
         return self.session.query(User).all()
 
     def changeset(self, user_dict: dict) -> dict:
-        return Validator(CREATE_USER_SCHEMA, purge_unknown=True).normalize(user_dict)
+        return UserSerializer().load(user_dict)

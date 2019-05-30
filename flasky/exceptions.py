@@ -12,3 +12,12 @@ class NotFoundError(Exception):
         self.message = message
         self.resource = resource
         self.id = id_
+
+
+class ValidationError(Exception):
+    def __init__(self, field_errors):
+        message = str(field_errors)
+
+        super().__init__(message)
+        self.message = message
+        self.field_errors = field_errors

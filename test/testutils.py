@@ -1,4 +1,4 @@
-from flasky.validator import ValidationError
+from flasky.exceptions import ValidationError
 
 
 def assert_models_equal(expected: dict, actual):
@@ -12,4 +12,4 @@ def assert_validation_errors(error_fields, fn):
         fn()
     except ValidationError as e:
         for field in error_fields:
-            assert field in e.errors
+            assert field in e.field_errors

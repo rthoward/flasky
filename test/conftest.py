@@ -68,6 +68,7 @@ def session_handler(engine, request):
     request.addfinalizer(teardown)
     return session
 
+
 @pytest.fixture(scope="function")
 def session(session_handler):
     return session_handler.session

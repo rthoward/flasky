@@ -21,9 +21,9 @@ alembic = "*"
 unipath = "*"
 sqlalchemy = "*"
 psycopg2-binary = "*"
-cerberus = "*"
 attrs = "*"
 marshmallow = "*"
+psycopg2 = "*"
 
 [requires]
 python_version = "3.7"

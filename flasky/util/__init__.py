@@ -1,6 +1,7 @@
 from flask import Flask
 import sqlalchemy
 
+
 class SessionHandler(object):
     def __init__(self, app: Flask, engine: sqlalchemy.engine.Engine):
         self.app = app
@@ -17,7 +18,6 @@ class SessionHandler(object):
         return sqlalchemy.orm.sessionmaker(bind=self.engine)
 
     def init_context_handlers(self):
-
         @self.app.teardown_appcontext
         def shutdown_session(response_or_exc):
             self.session.remove()

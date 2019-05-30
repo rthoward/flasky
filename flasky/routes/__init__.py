@@ -49,3 +49,16 @@ def make_error_handlers(app):
     def not_found_error(e):
         json = jsonify({"error": {"status_code": 404, "message": e.message}})
         return make_response(json, 401)
+
+    @app.errorhandler(e.ValidationError)
+    def validation_error(e):
+        json = jsonify(
+            {
+                "error": {
+                    "status_code": 400,
+                    "message": "validation-error",
+                    "details": e.field_errors,
+                }
+            }
+        )
+        return make_response(json, 400)

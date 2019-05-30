@@ -2,7 +2,7 @@ import pytest
 
 from flasky.usecases.users import CreateUser
 from flasky.services.user_service import UserService
-from flasky.validator import ValidationError
+from flasky.exceptions import ValidationError
 from test import testutils
 
 
@@ -12,7 +12,7 @@ def create_user(session_handler) -> CreateUser:
 
 
 def test_create_user(create_user: CreateUser):
-    new_user = create_user.do("username")
+    new_user = create_user.do({"username": "username"})
 
     assert new_user.id
     assert new_user.username == "username"
@@ -20,11 +20,10 @@ def test_create_user(create_user: CreateUser):
 
 def test_create_user_with_long_username(create_user: CreateUser):
     long_username = str(["a"] * 100)
-    testutils.assert_validation_errors(
-        ["username"], lambda: create_user.do(long_username)
-    )
+    data = {"username": long_username}
+    testutils.assert_validation_errors(["username"], lambda: create_user.do(data))
 
 
 def test_create_user_with_existing_username(create_user: CreateUser):
-    create_user.do("a")
-    create_user.do("a")
+    create_user.do({"username": "username"})
+    create_user.do({"username": "username"})

@@ -1,6 +1,8 @@
-from marshmallow import Schema, fields
+from marshmallow import fields, validate
+
+from .base_schema import BaseSchema
 
 
-class UserSerializer(Schema):
+class UserSerializer(BaseSchema):
     id = fields.Int()
-    username = fields.String()
+    username = fields.String(required=True, validate=[validate.Length(max=50)])
