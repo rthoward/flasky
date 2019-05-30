@@ -33,8 +33,8 @@ def make_routes(app: Flask, usecases: Usecases):
 
     @app.route("/users/me")
     @authenticate
-    def me(user=None):
-        return "me"
+    def me(user):
+        return jsonify({"user": UserSerializer().dump(user)})
 
     return app
 

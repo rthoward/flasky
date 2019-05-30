@@ -15,3 +15,6 @@ def test_me_returns_user_when_successful(client, session):
     response = client.get(url_for("me"), headers=headers)
 
     assert response.status_code == 200
+
+    assert response.json["user"]["id"] == user.id
+    assert response.json["user"]["username"] == "meow"
