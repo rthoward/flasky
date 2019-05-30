@@ -11,3 +11,7 @@ class Validator(CerberusValidator):
         result = super().validate(*args, **kwargs)
         if not result:
             raise ValidationError(self.errors)
+
+    def normalize(self, data, *args, **kwargs):
+        self.validate(data, *args, **kwargs)
+        return self.normalized(data)

@@ -19,8 +19,8 @@ class UserService(object):
     def session(self):
         return self.session_handler.session
 
-    def create(self, username) -> User:
-        new_user = User(username=username)
+    def create(self, data) -> User:
+        new_user = User(**data)
         self.session.add(new_user)
         self.session.commit()
 
@@ -35,5 +35,5 @@ class UserService(object):
     def list(self) -> List[User]:
         return self.session.query(User).all()
 
-    def validate(self, user_dict: dict):
-        Validator(CREATE_USER_SCHEMA).validate(user_dict)
+    def changeset(self, user_dict: dict) -> dict:
+        return Validator(CREATE_USER_SCHEMA, purge_unknown=True).normalize(user_dict)
