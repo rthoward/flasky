@@ -6,5 +6,5 @@ class CreateUser(object):
         self.user_service = user_service
 
     def do(self, data):
-        changeset = self.user_service.changeset(data)
-        return self.user_service.create(changeset)
+        data = self.user_service.cast(data)
+        return self.user_service.create(data)

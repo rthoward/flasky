@@ -30,5 +30,5 @@ class UserService(object):
     def list(self) -> List[User]:
         return self.session.query(User).all()
 
-    def changeset(self, user_dict: dict) -> dict:
+    def cast(self, user_dict: dict) -> dict:
         return UserSerializer().load(user_dict)
