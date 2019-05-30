@@ -12,6 +12,7 @@ black = "*"
 mypy = "*"
 sqlalchemy-stubs = "*"
 factory-boy = "*"
+pgcli = "*"
 
 [packages]
 flask = "*"

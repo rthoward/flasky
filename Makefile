@@ -17,4 +17,4 @@ check:
 
 pg:
 	$(eval DOCKER_IP := $(shell docker network inspect bridge | grep Gateway | awk '{ gsub(/"/, "", $$2); print $$2; }'))
-	@psql postgresql://postgres:postgres@$(DOCKER_IP):5432/postgres
+	@pgcli postgresql://postgres:postgres@$(DOCKER_IP):5432/postgres
