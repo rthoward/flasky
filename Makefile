@@ -7,7 +7,7 @@ dev.kill:
 	pkill -f "flask run"
 
 test:
-	@pipenv run pytest -s
+	@pipenv run pytest -s test
 
 format:
 	@pipenv run black .
