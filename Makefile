@@ -27,3 +27,6 @@ docs.serve:
 pg:
 	$(eval DOCKER_IP := $(shell docker network inspect bridge | grep Gateway | awk '{ gsub(/"/, "", $$2); print $$2; }'))
 	@pgcli postgresql://postgres:postgres@$(DOCKER_IP):5432/postgres
+
+console:
+	@pipenv run ipython -i ./console.py
