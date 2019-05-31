@@ -21,3 +21,10 @@ class ValidationError(Exception):
         super().__init__(message)
         self.message = message
         self.field_errors = field_errors
+
+
+class ConflictError(Exception):
+    def __init__(self, resource):
+        message = "{} with that data already exists".format(resource)
+        super().__init__(message)
+        self.resource = resource
