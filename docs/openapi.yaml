@@ -1,0 +1,38 @@
+openapi: 3.0.0
+info:
+  title: flasky
+  description: flasky api
+  version: 0.0.1
+servers:
+  - url: http://localhost:5000
+paths:
+  /users/:
+    post:
+      tags:
+        - Users
+      summary: Create user
+      operationId: CreateUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUserRequest"
+        description: createUserRequest
+        required: true
+      responses:
+        201:
+          description: Created
+
+components:
+  schemas:
+    CreateUserRequest:
+      type: object
+      required:
+        - username
+      properties:
+        username:
+          type: string
+      title: CreateUserRequest
+
+tags:
+  - name: Users
