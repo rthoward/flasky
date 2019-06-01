@@ -2,9 +2,10 @@ from sqlalchemy import String, Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
 from . import Base
+from .mixins import TimestampsMixin
 
 
-class User(Base):  # type: ignore
+class User(Base, TimestampsMixin):  # type: ignore
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)

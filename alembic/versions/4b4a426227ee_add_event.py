@@ -1,4 +1,4 @@
-"""empty message
+"""Add events table
 
 Revision ID: 4b4a426227ee
 Revises: 50e609a53dcb

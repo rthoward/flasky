@@ -2,9 +2,10 @@ from sqlalchemy import String, Column, Integer, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from . import Base
+from .mixins import TimestampsMixin
 
 
-class Event(Base):  # type: ignore
+class Event(Base, TimestampsMixin):  # type: ignore
     __tablename__ = "events"
 
     id = Column(Integer, primary_key=True)
