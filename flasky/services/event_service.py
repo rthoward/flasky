@@ -41,11 +41,3 @@ class EventService(object):
 
     def cast(self, d: dict) -> dict:
         return EventSerializer().load(d)
-
-
-def map_integrity_error(integrity_error: IntegrityError):
-    db_exc = integrity_error.orig
-    import ipdb
-
-    ipdb.set_trace()
-    # if isinstance(db_exc, errors.)
