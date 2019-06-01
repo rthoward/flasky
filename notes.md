@@ -8,7 +8,10 @@
     - create(user, name)
 
 # Events
+    - create(user, name)
+
+# Holds
+    - create(user, tickets)
 
 # Tickets
 
-# Holds

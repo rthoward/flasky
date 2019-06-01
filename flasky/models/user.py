@@ -15,3 +15,7 @@ class User(Base):  # type: ignore
 
     def __repr__(self):
         return "<User id={}>".format(self.id)
+
+    @property
+    def in_organization(self):
+        return self.organization_id is not None

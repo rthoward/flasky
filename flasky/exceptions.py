@@ -28,3 +28,7 @@ class ConflictError(Exception):
         message = "{} with that data already exists".format(resource)
         super().__init__(message)
         self.resource = resource
+
+
+class MissingOrganizationError(Exception):
+    message = "User has no organization."

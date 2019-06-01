@@ -1,2 +1,3 @@
 from .user_serializer import UserSerializer
 from .organization_serializer import OrganizationSerializer
+from .event_serializer import EventSerializer

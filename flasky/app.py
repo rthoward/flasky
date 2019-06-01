@@ -1,7 +1,7 @@
 from flask import Flask
 from sqlalchemy import create_engine
 
-from flasky.services import UserService, OrganizationService
+from flasky.services import UserService, OrganizationService, EventService
 from flasky.routes import make_routes
 from flasky.usecases import Usecases
 from flasky.util import SessionHandler
@@ -20,6 +20,7 @@ def make_usecases(session_handler):
     return Usecases(
         user_service=UserService(session_handler),
         organization_service=OrganizationService(session_handler),
+        event_service=EventService(session_handler),
     )
 
 

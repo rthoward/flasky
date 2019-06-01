@@ -15,3 +15,4 @@ Base = declarative_base(metadata=metadata)
 
 from .user import User
 from .organization import Organization
+from .event import Event

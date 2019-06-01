@@ -11,6 +11,7 @@ class Organization(Base):  # type: ignore
     name = Column(String, nullable=False, unique=True)
 
     users = relationship("User")
+    events = relationship("Event")
 
     def __repr__(self):
         return "<Organization id={} name={}>".format(self.id, self.name)
