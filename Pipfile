@@ -24,6 +24,7 @@ psycopg2-binary = "*"
 attrs = "*"
 marshmallow = "*"
 psycopg2 = "*"
+pendulum = "*"
 
 [requires]
 python_version = "3.7"

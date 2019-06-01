@@ -1,4 +1,5 @@
 import pytest
+import pendulum
 
 from flasky.usecases.events import CreateEvent
 from flasky.services import EventService
@@ -13,7 +14,11 @@ def create_event(session_handler) -> CreateEvent:
     return CreateEvent(EventService(session_handler=session_handler))
 
 
-VALID_EVENT_DATA = {"name": "My New Event"}
+VALID_EVENT_DATA = {
+    "name": "My New Event",
+    "begins_at": pendulum.now().isoformat(),
+    "ends_at": pendulum.now().add(hours=2).isoformat(),
+}
 
 
 def test_create_event(create_event: CreateEvent):
@@ -55,3 +60,15 @@ def test_event_is_associated_with_organization(create_event: CreateEvent, sessio
 
     org = session.query(Organization).get(user.organization_id)
     assert org.id == event.organization_id
+
+
+def test_event_must_end_no_later_than_it_begins(create_event: CreateEvent):
+    user = UserFactory.create(with_org=True)
+    bad_data = {
+        **VALID_EVENT_DATA,
+        "begins_at": pendulum.now().isoformat(),
+        "ends_at": pendulum.now().subtract(hours=1).isoformat(),
+    }
+
+    with pytest.raises(ValidationError):
+        create_event.do(user, bad_data)
