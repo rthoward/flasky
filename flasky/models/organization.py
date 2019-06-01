@@ -1,8 +1,13 @@
+import typing
 from sqlalchemy import String, Column, Integer
 from sqlalchemy.orm import relationship
 
 from . import Base
 from .mixins import TimestampsMixin
+
+if typing.TYPE_CHECKING:
+    from .user import User
+    from .event import Event
 
 
 class Organization(Base, TimestampsMixin):  # type: ignore
