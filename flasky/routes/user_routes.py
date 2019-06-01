@@ -11,7 +11,7 @@ def make_user_routes(app, usecases, d):
         return response({"user": UserSerializer().dump(user)}, 201)
 
     @app.route("/users/me")
-    @d.authenticate
+    @d.authed
     def me(user):
         return response({"user": UserSerializer().dump(user)})
 

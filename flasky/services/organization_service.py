@@ -15,8 +15,9 @@ class OrganizationService(object):
     def session(self):
         return self.session_handler.session
 
-    def create(self, data) -> Organization:
+    def create(self, user, data) -> Organization:
         organization = Organization(**data)
+        organization.users.append(user)
         self.session.add(organization)
 
         try:

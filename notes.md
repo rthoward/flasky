@@ -5,6 +5,7 @@
         * returns the current user
 
 # Organizations
+    - create(user, name)
 
 # Events
 

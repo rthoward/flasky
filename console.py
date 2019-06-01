@@ -5,4 +5,6 @@ from flasky.models import *
 
 session = sessionmaker(bind=make_engine(make_config()))()
 
-print("\nWelcome to Flasky. This shell has all models in scope, and a SQLAlchemy session called session.")
+print(
+    "\nWelcome to Flasky. This shell has all models in scope, and a SQLAlchemy session called session."
+)

@@ -9,6 +9,7 @@ from flasky.models import User
 from flasky.serializers import UserSerializer
 
 from .user_routes import make_user_routes
+from .organization_routes import make_organization_routes
 from .decorators import Decorators
 
 
@@ -17,6 +18,7 @@ def make_routes(app: Flask, usecases: Usecases):
     make_error_handlers(app)
     decorators = Decorators(usecases)
     app = make_user_routes(app, usecases, decorators)
+    app = make_organization_routes(app, usecases, decorators)
 
     @app.route("/")
     def health():
