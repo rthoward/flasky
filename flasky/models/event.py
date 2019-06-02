@@ -15,6 +15,8 @@ from .mixins import TimestampsMixin
 
 if typing.TYPE_CHECKING:
     from .organization import Organization
+    from .hold import Hold
+    from .ticket import Ticket
 
 
 class Event(Base, TimestampsMixin):  # type: ignore
@@ -25,6 +27,8 @@ class Event(Base, TimestampsMixin):  # type: ignore
 
     organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False)
     organization = relationship("Organization", back_populates="events")
+    holds = relationship("Hold", back_populates="event")
+    tickets = relationship("Ticket", back_populates="event")
 
     begins_at = Column(TIMESTAMP(timezone=True), nullable=False)
     ends_at = Column(TIMESTAMP(timezone=True), nullable=False)

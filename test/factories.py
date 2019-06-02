@@ -1,4 +1,6 @@
 import factory
+import pendulum
+
 from flasky import models
 
 
@@ -24,3 +26,13 @@ class OrganizationFactory(factory.alchemy.SQLAlchemyModelFactory):
     name = factory.LazyFunction(
         lambda: "{} Organization".format(factory.Faker("domain_word"))
     )
+
+
+class EventFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = models.Event
+
+    name = factory.LazyFunction(lambda: "{} Event".format(factory.Faker("domain_word")))
+    begins_at = pendulum.datetime(2020, 1, 2, 3)
+    ends_at = pendulum.datetime(2020, 1, 3, 3)
+    organization = OrganizationFactory.build()
