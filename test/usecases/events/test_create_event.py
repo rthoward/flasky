@@ -18,6 +18,7 @@ VALID_EVENT_DATA = {
     "name": "My New Event",
     "begins_at": pendulum.now().isoformat(),
     "ends_at": pendulum.now().add(hours=2).isoformat(),
+    "capacity": 100,
 }
 
 

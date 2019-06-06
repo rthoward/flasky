@@ -24,9 +24,11 @@ class Event(Base, TimestampsMixin):  # type: ignore
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
+    capacity = Column(Integer, nullable=False)
 
     organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False)
     organization = relationship("Organization", back_populates="events")
+
     holds = relationship("Hold", back_populates="event")
     tickets = relationship("Ticket", back_populates="event")
 
