@@ -1,5 +1,6 @@
 import factory
 import pendulum
+import random
 
 from flasky import models
 
@@ -32,7 +33,15 @@ class EventFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = models.Event
 
-    name = factory.LazyFunction(lambda: "{} Event".format(factory.Faker("domain_word")))
+    name = factory.LazyFunction(
+        lambda: "{} Event #{}".format(factory.Faker("domain_word"), random.randrange(1))
+    )
     begins_at = pendulum.datetime(2020, 1, 2, 3)
     ends_at = pendulum.datetime(2020, 1, 3, 3)
-    organization = OrganizationFactory.build()
+    organization = factory.SubFactory(OrganizationFactory)
+    capacity = 100
+
+
+class HoldFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = models.Hold
