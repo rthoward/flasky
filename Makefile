@@ -30,3 +30,9 @@ pg:
 
 console:
 	@pipenv run ipython -i ./console.py
+
+db.seed:
+	@pipenv run python bin/seed.py
+
+db.reset:
+	@pipenv run alembic downgrade base && alembic upgrade head && python bin/seed.py

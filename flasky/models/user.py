@@ -23,7 +23,7 @@ class User(Base, TimestampsMixin):  # type: ignore
     tickets = relationship("Ticket", back_populates="user")
 
     def __repr__(self):
-        return "<User id={}>".format(self.id)
+        return "<User id={} username={}>".format(self.id, self.username)
 
     @property
     def in_organization(self):
